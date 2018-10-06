@@ -25,6 +25,10 @@ RUN sh -c 'echo "deb [arch=amd64] https://packages.microsoft.com/repos/vscode st
 RUN apt-key adv --keyserver keyserver.ubuntu.com --recv-keys EB3E94ADBE1229CF
 RUN apt-get update && apt-get -y install code
 
+RUN sh -c 'echo "deb [arch=amd64] https://packagecloud.io/AtomEditor/atom/any/ any main" > /etc/apt/sources.list.d/atom.list'
+RUN curl -sL https://packagecloud.io/AtomEditor/atom/gpgkey | sudo apt-key add -
+RUN apt-get update && apt-get -y install atom
+
 RUN useradd -ms /bin/bash -G sudo -p rosdev rosdev
 ADD /sudoers.txt /etc/sudoers
 RUN chmod 440 /etc/sudoers
@@ -45,8 +49,8 @@ RUN /bin/bash -c "source /opt/ros/melodic/setup.bash && \
                   echo 'source ~/ros_ws/devel/setup.bash' >> ~/.bashrc"
 
 # Installing repo required for homework
-RUN cd ~/ros_ws/src && git clone https://palmalcheg:iB3XLmh7@github.com/palmalcheg/RoboND-Kinematics-Project.git ~/ros_ws/src/kinematics_project   \
-		&& git clone https://palmalcheg:iB3XLmh7@github.com/ros-planning/moveit_visual_tools.git ~/ros_ws/src/mvt
+RUN cd ~/ros_ws/src && git clone https://palmalcheg:<>@github.com/palmalcheg/RoboND-Kinematics-Project.git ~/ros_ws/src/kinematics_project   \
+		&& git clone https://palmalcheg:<>@github.com/ros-planning/moveit_visual_tools.git ~/ros_ws/src/mvt
 
 # Updating ROSDEP and installing dependencies
 RUN cd ~/ros_ws && rosdep update && rosdep install --from-paths src --ignore-src --rosdistro=melodic -y
@@ -67,5 +71,7 @@ RUN /bin/bash -c "echo 'export GAZEBO_MODEL_PATH=~/ros_ws/src/kinematics_project
                   echo 'source ~/ros_ws/devel/setup.bash' >> ~/.bashrc"
 
 RUN code --install-extension ms-vscode.cpptools && code  --install-extension ajshort.ros
+RUN code ~/ros_ws/src/kinematics_project
 ENV USER rosdev
 ENV PASSWORD rosdev
+
